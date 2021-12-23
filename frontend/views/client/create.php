@@ -1,0 +1,20 @@
+<?php
+
+
+/* @var $this yii\web\View */
+/* @var $model common\models\Client */
+
+$this->title = Yii::t('app', 'Қўшиш');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Мижозлар'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<div class="client-create card">
+    <div class="card-head card-head-sm style-primary">
+        <header><?= $this->title ?></header>
+    </div>
+    <div class="card-body">
+        <?= $this->render('_form', [
+            'model' => $model,
+        ]) ?>
+    </div>
+</div>
