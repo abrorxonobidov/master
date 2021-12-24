@@ -5,6 +5,7 @@ namespace common\models;
 use common\models\activeQueries\ProductQuery;
 use Yii;
 use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * This is the model class for table "product".
@@ -27,6 +28,8 @@ use yii\db\Expression;
  * @property User $modifier
  * @property SaleProductLink[] $saleProductLinks
  * @property Unit $unit
+ * @property int $quantity
+ * @property string $QuantityWithUnit
  */
 class Product extends BaseActiveRecord
 {
@@ -68,9 +71,12 @@ class Product extends BaseActiveRecord
         return array_merge(parent::attributeLabels(), [
             'id' => Yii::t('app', 'ID'),
             'unit_id' => Yii::t('app', 'Ўлчов бирлиги'),
+            'unit.title' => Yii::t('app', 'Ўлчов бирлиги'),
             'income_price' => Yii::t('app', 'Сотиб олиш нархи'),
             'price' => Yii::t('app', 'Сотиш нархи'),
             'image' => Yii::t('app', 'Маҳсулот расми'),
+            'quantity' => Yii::t('app', 'Қолдиқ'),
+            'quantityWithUnit' => Yii::t('app', 'Қолдиқ'),
         ]);
     }
 
@@ -187,5 +193,43 @@ class Product extends BaseActiveRecord
         foreach ($list as $item)
             $out[$item['id']] = $item['title'];
         return $out;
+    }
+
+    public function getQuantity()
+    {
+        $income = IncomeProductLink::find()
+            ->select([
+                'income' => 'SUM(amount)',
+                'sale' => 'SUM(0)'
+            ])
+            ->where([
+                'product_id' => $this->id,
+                'status' => self::STATUS_ACTIVE
+            ]);
+
+        $sale = SaleProductLink::find()
+            ->select([
+                'income' => 'SUM(0)',
+                'sale' => 'SUM(amount)',
+            ])
+            ->where([
+                'product_id' => $this->id,
+                'status' => self::STATUS_ACTIVE
+            ]);
+
+        $res = (new Query())
+            ->from($income)
+            ->union($sale);
+
+        return @(new Query())
+            ->select('SUM(income) - SUM(sale)')
+            ->from($res)
+            ->column()[0];
+
+    }
+
+    public function getQuantityWithUnit()
+    {
+        return Yii::$app->formatter->asDecimal($this->quantity) . ' ' . @$this->unit->title;
     }
 }

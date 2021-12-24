@@ -56,12 +56,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'comment',
                 [
+                    'attribute' => 'quantity',
+                    'format' => 'decimal',
+                    'contentOptions' => ['class' => 'text-bold text-right']
+                ],
+                [
+                    'label' => false,
+                    'value' => 'unit.title'
+                ],
+                [
                     'class' => 'yii\grid\ActionColumn',
                     'headerOptions' => ['class' => 'col-sm-1'],
                     'template' => '{view} {update}',
                     'buttons' => [
                         'update' => function ($url, $model, $key) {
-                            return Html::a(yii\bootstrap\Html::icon('pencil'), ['update', 'id' => $model->id, 'route' => Url::to()], ['class' => 'pjaxModalButton']);
+                            return Html::a(yii\bootstrap\Html::icon('pencil'), ['update', 'id' => $model->id, 'route' => Url::to()]);
                         },
                         'view' => function ($url, $model, $key) {
                             return Html::a(yii\bootstrap\Html::icon('eye-open'), ['view', 'id' => $model->id, 'route' => Url::to()], ['class' => 'pjaxModalButton']);

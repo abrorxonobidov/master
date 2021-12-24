@@ -2,7 +2,6 @@
 
 namespace common\models\search;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Product;
@@ -28,37 +27,28 @@ class ProductSearch extends Product
      */
     public function scenarios()
     {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
+
     public function search($params)
     {
         $query = Product::find();
 
-        // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ['defaultOrder' => ['id' => SORT_DESC]]
+            'sort' => [
+                'defaultOrder' => [
+                    'title' => SORT_ASC,
+                    'id' => SORT_ASC
+                ]
+            ]
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
+        if (!$this->validate()) return $dataProvider;
 
-        // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             'unit_id' => $this->unit_id,
@@ -71,7 +61,8 @@ class ProductSearch extends Product
             'modifier_id' => $this->modifier_id,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
+        $query
+            ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'comment', $this->comment]);
 
