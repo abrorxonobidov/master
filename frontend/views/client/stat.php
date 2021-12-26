@@ -141,7 +141,7 @@ echo GridView::widget([
             'contentOptions' => ['class' => 'text-bold text-right'],
             'format' => 'decimal',
             'pageSummary' => function ($summary) use ($saleInit) {
-                return Yii::$app->formatter->asDecimal($summary + $saleInit);
+                return Yii::$app->formatter->asDecimal(intval($summary) + intval($saleInit));
             },
             'pageSummaryOptions' => ['class' => 'text-bold text-right']
         ],
@@ -161,7 +161,7 @@ echo GridView::widget([
             'contentOptions' => ['class' => 'text-bold text-right'],
             'format' => 'decimal',
             'pageSummary' => function ($summary) use ($paymentInit) {
-                return Yii::$app->formatter->asDecimal($summary + $paymentInit);
+                return Yii::$app->formatter->asDecimal(intval($summary) + intval($paymentInit));
             },
             'pageSummaryOptions' => ['class' => 'text-bold text-right']
         ],
