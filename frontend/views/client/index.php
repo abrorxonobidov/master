@@ -1,8 +1,7 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use frontend\widgets\GridView;
-use yii\helpers\Url;
 
 /**
  * @var $this yii\web\View
@@ -20,10 +19,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="card-body table-responsive no-padding">
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
-            'filterModel' => null,
             'columns' => [
                 [
-                    'header' => 'Мижоз',
+                    'header' => Yii::t('app', 'Мижоз'),
                     'attribute' => 'name',
                     'format' => 'raw',
                     'value' => 'personInfo'
@@ -35,11 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'attribute' => 'image',
-                    'filter' => false,
                     'value' => function (common\models\Client $model) {
                         return $model->image ?
                             Html::a(Html::img($model::imageSourcePath() . $model->image, ['class' => 'img-responsive img-thumbnail']),
-                                ['/uploads/' . $model->image], ['class' => 'pjaxModalButton']
+                                ['/uploads/' . $model->image], ['class' => 'pjaxModalButton', 'data-title' => $model->name]
                             ) : '';
                     },
                     'format' => 'raw',
@@ -51,11 +48,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['class' => 'col-sm-1'],
                     'template' => '{view} {update}',
                     'buttons' => [
-                        'update' => function ($url, $model, $key) {
-                            return Html::a(yii\bootstrap\Html::icon('pencil'), ['update', 'id' => $model->id, 'route' => Url::to()], ['class' => 'pjaxModalButton']);
+                        'update' => function ($url, $model) {
+                            return Html::a(Html::icon('pencil'),
+                                $url . '&route=/client/index',
+                                ['class' => 'pjaxModalButton', 'data-title' => Yii::t('app', 'Таҳрирлаш') . ': ' . $model->name]
+                            );
                         },
-                        'view' => function ($url, $model, $key) {
-                            return Html::a(yii\bootstrap\Html::icon('eye-open'), ['view', 'id' => $model->id, 'route' => Url::to()], ['class' => 'pjaxModalButton']);
+                        'view' => function ($url, $model) {
+                            return Html::a(Html::icon('eye-open'),
+                                $url,
+                                ['class' => 'pjaxModalButton', 'data-title' => $model->name]
+                            );
                         }
                     ]
                 ]

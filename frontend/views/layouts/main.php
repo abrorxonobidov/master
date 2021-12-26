@@ -87,6 +87,7 @@ $user = Yii::$app->user->identity;
                         'id' => 'PjaxModal',
                         'size' => Modal::SIZE_LARGE,
                         'options' => ['tabindex' => ''],
+                        'header' => Html::tag('h4', '', ['id' => 'pjax-modal-title']),
                         'clientOptions' => ['backdrop' => 'static', 'keyboard' => true, 'validateonsubmit' => true]
                     ]);
                     echo Html::img('', ['class' => Modal::SIZE_LARGE, 'style' => 'padding-right: 35px;']);

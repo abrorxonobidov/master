@@ -1,23 +1,31 @@
 $(document).ready(function () {
     $('.pjaxModalButton').click(function (e) {
-        callAjaxModal(e, this);
+        callAjaxModal(e, $(this));
     });
 })
 
-function callAjaxModal(e, el) {
+let callAjaxModal = (e, el) => {
     e.preventDefault();
-    $('#PjaxModal').find('.modal-header').html('<div class=\'pull-left\'><h4>' + $(el).text() + '</h4></div><button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">×</button>');
-    if (imageExist($(el).attr('href'))) {
-        $('#PjaxModal').modal('show').find('.modal-body').html('<img src="' + $(el).attr('href') + '" class="modal-lg" style="padding-right: 35px;">');
-    } else {
-        $('#PjaxModal').modal('show')
+    let pJaxModal = $('#PjaxModal');
+    pJaxModal.find('#pjax-modal-title').html(el.text() || el.data('title'));
+    if (imageExist(el.attr('href'))) {
+        let img = $('<img>', {
+            'src': el.attr('href'),
+            'class': 'modal-lg',
+            'style': 'padding-right: 35px'
+        })
+        pJaxModal.modal('show')
             .find('.modal-body')
-            .load($(el).attr('href'));
+            .html(img);
+    } else {
+        pJaxModal.modal('show')
+            .find('.modal-body')
+            .load(el.attr('href'));
     }
 }
 
-function imageExist(url) {
-    var img = new Image();
+let imageExist = (url) => {
+    let img = new Image();
     img.src = url;
-    return img.height != 0;
+    return img.height !== 0;
 }

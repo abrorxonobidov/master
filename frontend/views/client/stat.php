@@ -1,7 +1,6 @@
 <?php
 
 use kartik\grid\GridView;
-use common\models\PayType;
 
 /**
  * @var frontend\models\ClientStatSearch $searchModel
@@ -11,6 +10,9 @@ use common\models\PayType;
 $this->title = Yii::t('app', 'Мижоз бўйича');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Ҳисоботлар'), 'url' => '#'];
 $this->params['breadcrumbs'][] = $this->title;
+
+$saleInit = $searchModel->getSaleInitialRemainder();
+$paymentInit = $searchModel->getPaymentInitialRemainder();
 
 echo frontend\widgets\Collapse::widget([
     'header' => 'Параметрлар',
@@ -27,10 +29,9 @@ echo GridView::widget([
     'striped' => false,
     'resizableColumns' => true,
     'showPageSummary' => true,
-    'pageSummaryRowOptions' => ['class' => 'kv-page-summary warning'],
+    'pageSummaryRowOptions' => ['class' => 'kv-page-summary success'],
     'toolbar' => [
-        '{export}',
-        //'{toggleData}',
+        '{export}'
     ],
     'panelTemplate' => "{panelHeading} {panelBefore} {items}",
     'filterRowOptions' => [
@@ -66,13 +67,31 @@ echo GridView::widget([
     'exportConfig' => [
         'xls' => true,
     ],
-    'tableOptions' => ['class' => 'table table-bordered'],
     'dataProvider' => $dataProvider,
-    'options' => ['class' => 'table-responsive'],
-    //'floatHeader' => true,
-    //'floatHeaderOptions' => ['top' => '300'],
     'filterModel' => $searchModel,
     'layout' => "{items}\n{summary}\n{pager}",
+    'afterHeader' => [
+        [
+            'columns' => [
+                [
+                    'content' => 'Дастлабки қолдиқ',
+                    'options' => ['class' => ['text-right text-bold'], 'colspan' => 4]
+                ],
+                [
+                    'content' => Yii::$app->formatter->asDecimal($saleInit),
+                    'options' => ['class' => ['text-bold text-right']]
+                ],
+                ['content' => 'сўм'],
+                [
+                    'content' => Yii::$app->formatter->asDecimal($paymentInit),
+                    'options' => ['class' => ['text-bold text-right']]
+                ],
+                ['content' => 'сўм'],
+                ['content' => null]
+            ],
+            'options' => ['class' => 'bg-success']
+        ]
+    ],
     'columns' => [
         [
             'class' => 'kartik\grid\DataColumn',
@@ -98,6 +117,7 @@ echo GridView::widget([
         ],
         [
             'class' => 'kartik\grid\DataColumn',
+            'label' => 'Соат',
             'value' => function ($data) {
                 return date('H:i', strtotime($data['date_time']));
             },
@@ -105,22 +125,13 @@ echo GridView::widget([
                 'class' => 'col-md-1'
             ]
         ],
-        [
-            'class' => 'kartik\grid\DataColumn',
-            'attribute' => 'client_id',
-            'value' => function ($data) {
-                return $data['client_name'];
-            },
-            'headerOptions' => ['class' => 'col-sm-2']
-        ],
         'type',
         [
             'class' => 'kartik\grid\DataColumn',
             'attribute' => 'pay_type_id',
-            'filter' => PayType::getList(),
+            'filter' => common\models\PayType::getList(),
             'value' => 'pay_type_title',
             'headerOptions' => ['class' => 'col-sm-2'],
-            //'pageSummary' => @$searchModel->payType->title,
             'pageSummary' => Yii::t('app', 'Жами'),
         ],
         [
@@ -129,7 +140,9 @@ echo GridView::widget([
             'headerOptions' => ['class' => 'col-sm-1'],
             'contentOptions' => ['class' => 'text-bold text-right'],
             'format' => 'decimal',
-            'pageSummary' => true,
+            'pageSummary' => function ($summary) use ($saleInit) {
+                return Yii::$app->formatter->asDecimal($summary + $saleInit);
+            },
             'pageSummaryOptions' => ['class' => 'text-bold text-right']
         ],
         [
@@ -147,7 +160,9 @@ echo GridView::widget([
             'headerOptions' => ['class' => 'col-sm-1'],
             'contentOptions' => ['class' => 'text-bold text-right'],
             'format' => 'decimal',
-            'pageSummary' => true,
+            'pageSummary' => function ($summary) use ($paymentInit) {
+                return Yii::$app->formatter->asDecimal($summary + $paymentInit);
+            },
             'pageSummaryOptions' => ['class' => 'text-bold text-right']
         ],
         [
@@ -162,17 +177,30 @@ echo GridView::widget([
         [
             'class' => 'kartik\grid\DataColumn',
             'attribute' => 'comment',
-            'pageSummary' => function () use ($dataProvider) {
-
+            'value' => function ($model) {
+                $a = trim($model['comment']);
+                $s = null;
+                $word = 0;
+                for ($i = 0; $i < strlen($a); $i++)
+                    $s .= ($a[$i] == ' ' && ++$word % 5 == 0) ? '<br>' : $a[$i];
+                return $s;
+            },
+            'format' => 'html',
+            'pageSummary' => function () use ($dataProvider, $paymentInit, $saleInit) {
                 $a = (new yii\db\Query())
                     ->select('SUM(price_payment) - SUM(price_sale)')
                     ->from(['q' => $dataProvider->query])
                     ->column();
-
-                $balance = Yii::$app->formatter->asDecimal(@$a[0]);
+                $balance = Yii::$app->formatter->asDecimal(@$a[0] + $paymentInit - $saleInit);
                 return "$balance сўм";
             },
+            'headerOptions' => ['class' => 'col-md-2'],
+            'contentOptions' => ['class' => 'col-md-2'],
             'pageSummaryOptions' => ['class' => 'text-bold text-right']
         ],
     ],
+    'emptyText' => $searchModel->client_id
+        ? Yii::t('app', 'Маълумот топилмади')
+        : Yii::t('app', 'Мижозни танланг'),
+    'emptyTextOptions' => ['class' => 'alert alert-success']
 ]);

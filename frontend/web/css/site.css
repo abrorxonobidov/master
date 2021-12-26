@@ -133,10 +133,12 @@ body:not(.header-fixed) #menubar, .menubar-first #menubar {
 .my-card .card-head header {
     padding: 3px 10px;
 }
+
 .my-card .card-head header .btn {
     padding: 5px 15px;
     font-size: 12px;
 }
+
 .my-grid-summary {
     text-align: right;
     font-weight: bold;
@@ -159,16 +161,31 @@ body:not(.header-fixed) #menubar, .menubar-first #menubar {
 }
 
 .my-grid-table thead th,
-.my-grid-table thead th a{
+.my-grid-table thead th a {
     font-weight: bold !important;
     text-align: center;
 }
+
 .dynamicform_wrapper .form-group {
     margin-bottom: 0;
 }
+
 .collapse-comment {
     text-indent: 50px;
 }
+
 .currency-column {
     width: 20px;
+}
+
+.text-bold {
+    font-weight: bold !important;
+}
+
+.width300px {
+    width: 300px !important;
+}
+
+#header {
+    position: fixed !important;
 }

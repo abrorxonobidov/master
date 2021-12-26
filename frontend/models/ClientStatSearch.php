@@ -32,10 +32,6 @@ class ClientStatSearch extends Model
     public $pay_type_title;
     public $comment;
 
-
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
@@ -43,7 +39,6 @@ class ClientStatSearch extends Model
             [['client_id', 'pay_type_id', 'price_sale', 'price_payment'], 'integer'],
         ];
     }
-
 
     public function attributeLabels()
     {
@@ -53,6 +48,7 @@ class ClientStatSearch extends Model
             'client_name' => 'Мижоз',
             'date_from' => 'дан',
             'date_to' => 'гача',
+            'type' => 'Тури',
             'pay_type_id' => 'Тулов тури',
             'price_sale' => 'Харид нархи',
             'price_payment' => 'Тўлов нархи',
@@ -85,6 +81,7 @@ class ClientStatSearch extends Model
             ->where([
                 's.status' => Sale::STATUS_ACTIVE,
                 'p.status' => Sale::STATUS_ACTIVE,
+
             ])
             ->groupBy([
                 'client_name', 'price_payment', 'type',
@@ -113,13 +110,13 @@ class ClientStatSearch extends Model
         $this->load($params);
 
         $paymentQuery
-            ->andFilterWhere(['p.client_id' => $this->client_id])
+            ->andWhere(['p.client_id' => $this->client_id])
             ->andFilterWhere(['p.pay_type_id' => $this->pay_type_id])
             ->andFilterWhere(['>=', "DATE_FORMAT(p.date_time, '%Y-%m-%d')", $this->date_from])
             ->andFilterWhere(['<=', "DATE_FORMAT(p.date_time, '%Y-%m-%d')", $this->date_to]);
 
         $salesQuery
-            ->andFilterWhere(['s.client_id' => $this->client_id])
+            ->andWhere(['s.client_id' => $this->client_id])
             ->andFilterWhere(['p.pay_type_id' => $this->pay_type_id])
             ->andFilterWhere(['>=', "DATE_FORMAT(s.date_time, '%Y-%m-%d')", $this->date_from])
             ->andFilterWhere(['<=', "DATE_FORMAT(s.date_time, '%Y-%m-%d')", $this->date_to]);
@@ -156,6 +153,37 @@ class ClientStatSearch extends Model
             $this->date_from = date('Y-m-01');
             $this->date_to = date('Y-m-d');
         }
+    }
+
+    public function getSaleInitialRemainder()
+    {
+        return
+            SaleProductLink::find()
+                ->alias('spl')
+                ->select('SUM(spl.amount * spl.price)')
+                ->innerJoin(['s' => Sale::tableName()], 's.id = spl.sale_id')
+                ->where([
+                    's.client_id' => $this->client_id,
+                    's.status' => Sale::STATUS_ACTIVE
+                ])
+                ->andWhere(['<', 's.date_time', $this->date_from])
+                ->column()[0] ?? 0;
+    }
+
+    public function getPaymentInitialRemainder()
+    {
+        return
+            Payment::find()
+                ->alias('p')
+                ->select('SUM(p.price)')
+                ->leftJoin(['s' => Sale::tableName()], 's.id = p.sale_id')
+                ->where([
+                    'p.client_id' => $this->client_id,
+                    'p.status' => Sale::STATUS_ACTIVE
+                ])
+                ->andWhere('s.status IS NULL OR s.status = 1')
+                ->andWhere(['<', 'p.date_time', $this->date_from])
+                ->column()[0] ?? 0;
     }
 
 }
