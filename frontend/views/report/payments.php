@@ -70,10 +70,7 @@ echo GridView::widget([
         [
             'class' => 'kartik\grid\DataColumn',
             'attribute' => 'date_time',
-            'format' => 'raw',
-            'value' => function (common\models\Payment $data) {
-                return date('d.m.Y', strtotime($data->date_time));
-            },
+            'format' => ['date', 'php:d.m.Y'],
             'group' => true,
             'groupEvenCssClass' => 'kv-group-odd',
             'groupOddCssClass' => 'kv-group-odd',
@@ -93,6 +90,7 @@ echo GridView::widget([
             },
         ],
         [
+            'label' => 'Соат',
             'value' => function (common\models\Payment $data) {
                 return date('H:i', strtotime($data->date_time));
             },
@@ -108,6 +106,7 @@ echo GridView::widget([
             'contentOptions' => ['class' => 'text-bold'],
             'pageSummary' => Yii::t('app', 'Жами'),
         ],
+        'type',
         [
             'class' => 'kartik\grid\DataColumn',
             'attribute' => 'pay_type_id',

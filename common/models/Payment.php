@@ -26,12 +26,13 @@ use Yii;
  * @property User $modifier
  * @property PayType $payType
  * @property Sale $sale
+ * @property string $type
  */
 class Payment extends BaseActiveRecord
 {
 
 
-
+    public $type;
 
     /**
      * {@inheritdoc}
@@ -75,6 +76,7 @@ class Payment extends BaseActiveRecord
             'date_time' => Yii::t('app', 'Тўланган сана'),
             'date_from' => Yii::t('app', 'Тўланган сана (дан)'),
             'date_to' => Yii::t('app', 'Тўланган сана (гача)'),
+            'type' => Yii::t('app', 'Тури'),
         ]);
     }
 

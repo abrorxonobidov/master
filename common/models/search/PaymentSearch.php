@@ -54,7 +54,7 @@ class PaymentSearch extends Payment
 
         $this->load($params);
 
-        if (!$this->validate())  return $dataProvider;
+        if (!$this->validate()) return $dataProvider;
 
         // grid filtering conditions
         $query->andFilterWhere([
@@ -73,6 +73,37 @@ class PaymentSearch extends Payment
 
         $query->andFilterWhere(['like', 'comment', $this->comment]);
         $query->andFilterWhere(['>=', "DATE_FORMAT(date_time, '%Y-%m-%d')", $this->date_from])
+            ->andFilterWhere(['<=', "DATE_FORMAT(date_time, '%Y-%m-%d')", $this->date_to]);
+
+        return $dataProvider;
+    }
+
+    public function searchForStat($params)
+    {
+        $query = Payment::find()
+            ->select([
+                '*',
+                'type' => "CASE WHEN (sale_id IS NULL) THEN 'Тўлов' ELSE 'Ҳарид + Тўлов' END",
+            ])
+            ->where(['status' => Payment::STATUS_ACTIVE])
+            ->andWhere(['>', 'price', 0]);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'sort' => ['defaultOrder' => ['date_time' => SORT_ASC]],
+            'pagination' => ['pageSize' => 1000],
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) return $dataProvider;
+
+        $query
+            ->andFilterWhere([
+                'client_id' => $this->client_id,
+                'pay_type_id' => $this->pay_type_id
+            ])
+            ->andFilterWhere(['>=', "DATE_FORMAT(date_time, '%Y-%m-%d')", $this->date_from])
             ->andFilterWhere(['<=', "DATE_FORMAT(date_time, '%Y-%m-%d')", $this->date_to]);
 
         return $dataProvider;
