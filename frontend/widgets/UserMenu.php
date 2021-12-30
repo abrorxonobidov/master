@@ -51,8 +51,8 @@ class UserMenu extends Widget
             'items' => [
                 ['label' => Yii::t('app', 'Тўловлар бўйича'), 'url' => ['/report/payments'], ],
                 ['label' => Yii::t('app', 'Касса ҳисоботи'), 'url' => ['/report/cashbox'], ],
-                ['label' => Yii::t('app', 'Маҳсулот айланмаси'), 'url' => ['/product/stat'], ],
-                ['label' => Yii::t('app', 'Мижоз бўйча'), 'url' => ['/client/stat'], ],
+                ['label' => Yii::t('app', 'Маҳсулот айланмаси'), 'url' => ['/report/product'], ],
+                ['label' => Yii::t('app', 'Мижоз бўйча'), 'url' => ['/report/client'], ],
             ]
         ];
         return $items;

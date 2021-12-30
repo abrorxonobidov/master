@@ -29,7 +29,7 @@ use yii\db\Query;
  * @property SaleProductLink[] $saleProductLinks
  * @property Unit $unit
  * @property int $quantity
- * @property string $QuantityWithUnit
+ * @property string $quantityWithUnit
  */
 class Product extends BaseActiveRecord
 {
