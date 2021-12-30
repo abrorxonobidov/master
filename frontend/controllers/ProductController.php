@@ -4,7 +4,6 @@ namespace frontend\controllers;
 
 use common\models\Product;
 use common\models\search\ProductSearch;
-use frontend\models\ProductStatSearch;
 use Yii;
 use yii\web\NotFoundHttpException;
 
@@ -108,23 +107,6 @@ class ProductController extends BaseController
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
-
-    /**
-     * @return mixed
-     * @throws mixed if the model cannot be found
-     */
-    public function actionStat()
-    {
-
-        $searchModel = new ProductStatSearch();
-        $params = $this->request->queryParams;
-        $searchModel->loadDefaultSearchParams();
-        $dataProvider = $searchModel->search($params);
-        return $this->render('stat', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider
-        ]);
     }
 
     /**

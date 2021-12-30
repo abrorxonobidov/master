@@ -4,7 +4,6 @@ namespace frontend\controllers;
 
 use common\models\Client;
 use common\models\search\ClientSearch;
-use frontend\models\ClientStatSearch;
 use Yii;
 use yii\web\NotFoundHttpException;
 
@@ -111,18 +110,6 @@ class ClientController extends BaseController
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
-
-    public function actionStat()
-    {
-        $searchModel = new ClientStatSearch();
-        $params = $this->request->queryParams;
-        $searchModel->loadDefaultSearchParams($params);
-        $dataProvider = $searchModel->search($params);
-        return $this->render('stat', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider
-        ]);
     }
 
     /**
