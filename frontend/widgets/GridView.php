@@ -17,6 +17,8 @@ class GridView extends KartikGridView
 
     public $striped = false;
 
+    public $responsive = false;
+
     public $hover = true;
 
     public $layout = "{items}\n <div class='my-grid-summary'>{summary}</div>\n{pager}";

@@ -16,31 +16,34 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="card-head style-primary">
         <header><?= Html::a(Yii::t('app', 'Қўшиш'), ['create'], ['class' => 'btn btn-success pjaxModalButton']) ?></header>
     </div>
-    <div class="card-body table-responsive no-padding">
+    <div class="card-body no-padding">
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'columns' => [
                 [
+                    'attribute' => 'image',
+                    'value' => function (common\models\Client $model) {
+                        return $model->image ?
+                            Html::a(Html::img($model::imageSourcePath() . $model->image, ['class' => 'img-circle', 'style' => 'width:150px;']),
+                                ['/uploads/' . $model->image], ['class' => 'pjaxModalButton', 'data-title' => $model->name]
+                            ) : '';
+                    },
+                    'format' => 'raw',
+                    'headerOptions' => ['class' => 'col-md-1']
+                ],
+                [
                     'header' => Yii::t('app', 'Мижоз'),
                     'attribute' => 'name',
                     'format' => 'raw',
-                    'value' => 'personInfo'
+                    'value' => 'personInfo',
+                    'contentOptions' => [
+                        'class' => 'text-center'
+                    ]
                 ],
                 [
                     'attribute' => 'car_number',
                     'format' => 'raw',
                     'value' => 'carInfo'
-                ],
-                [
-                    'attribute' => 'image',
-                    'value' => function (common\models\Client $model) {
-                        return $model->image ?
-                            Html::a(Html::img($model::imageSourcePath() . $model->image, ['class' => 'img-responsive img-thumbnail']),
-                                ['/uploads/' . $model->image], ['class' => 'pjaxModalButton', 'data-title' => $model->name]
-                            ) : '';
-                    },
-                    'format' => 'raw',
-                    'headerOptions' => ['class' => 'col-md-2']
                 ],
                 'comment',
                 [
