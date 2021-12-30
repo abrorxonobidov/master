@@ -216,5 +216,9 @@ echo kartik\grid\GridView::widget([
                 return "Қолдиқ: $balance $unit";
             },
         ]
-    ]
+    ],
+    'emptyText' => $searchModel->product_id
+        ? Yii::t('app', 'Маълумот топилмади')
+        : Yii::t('app', 'Маҳсулот танланг'),
+    'emptyTextOptions' => ['class' => 'alert alert-success']
 ]);

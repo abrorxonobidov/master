@@ -139,12 +139,12 @@ class ProductStatSearch extends Model
         $this->load($params);
 
         $income
-            ->andFilterWhere(['il.product_id' => $this->product_id])
+            ->andWhere(['il.product_id' => $this->product_id])
             ->andFilterWhere(['>=', "DATE_FORMAT(i.date_time, '%Y-%m-%d')", $this->date_from])
             ->andFilterWhere(['<=', "DATE_FORMAT(i.date_time, '%Y-%m-%d')", $this->date_to]);
 
         $sale
-            ->andFilterWhere(['sl.product_id' => $this->product_id])
+            ->andWhere(['sl.product_id' => $this->product_id])
             ->andFilterWhere(['>=', "DATE_FORMAT(s.date_time, '%Y-%m-%d')", $this->date_from])
             ->andFilterWhere(['<=', "DATE_FORMAT(s.date_time, '%Y-%m-%d')", $this->date_to]);
 
