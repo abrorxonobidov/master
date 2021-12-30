@@ -1,5 +1,7 @@
 <?php
 
+use kartik\grid\GridView;
+
 /**
  * @var frontend\models\ClientStatSearch $searchModel
  * @var yii\data\ActiveDataProvider $dataProvider
@@ -17,10 +19,57 @@ echo frontend\widgets\Collapse::widget([
     'content' => $this->render('_client_search', ['model' => $searchModel])
 ]);
 
-echo frontend\widgets\StatGridView::widget([
-    'panelHeading' => $this->title,
-    'filterModel' => $searchModel,
+echo GridView::widget([
+    'summary' => Yii::t('app', 'Намойиш этилмоқда <b>{begin, number}-{end, number}</b> та ёзув <b>{totalCount, number}</b> тадан.'),
+    'panel' => [
+        'type' => GridView::TYPE_PRIMARY,
+        'heading' => $this->title
+    ],
+    'hover' => true,
+    'striped' => false,
+    'resizableColumns' => true,
+    'showPageSummary' => true,
+    'pageSummaryRowOptions' => ['class' => 'kv-page-summary success'],
+    'toolbar' => [
+        '{export}'
+    ],
+    'panelTemplate' => "{panelHeading} {panelBefore} {items}",
+    'filterRowOptions' => [
+        'class' => 'hidden'
+    ],
+    'toggleDataOptions' => [
+        'maxCount' => 10000,
+        'minCount' => 1000,
+        'confirmMsg' => Yii::t('app', 'Ҳаммасини кўришни хохлайсизми?'),
+        //Yii::t('kvgrid', 'There are {totalCount} records. Are you sure you want to display them all?',
+        //    ['totalCount' => number_format($this->dataProvider->getTotalCount())]),
+        'all' => [
+            'icon' => 'resize-full',
+            'label' => Yii::t('app', 'Барчаси'),
+            'class' => 'btn btn-default',
+            'title' => Yii::t('app', 'Барчасини кўрсатиш')
+        ],
+        'page' => [
+            'icon' => 'resize-small',
+            'label' => Yii::t('app', 'Саҳифа'),
+            'class' => 'btn btn-default',
+            'title' => Yii::t('app', 'Биринчи саҳифани кўрсатиш')
+        ],
+    ],
+    'export' => [
+        'label' => Yii::t('app', 'Юклаб олиш'),
+        'header' => false,
+        'fontAwesome' => true,
+        'target' => kartik\export\ExportMenu::TARGET_BLANK,
+        'format' => 'raw',
+        'showConfirmAlert' => false,
+    ],
+    'exportConfig' => [
+        'xls' => true,
+    ],
     'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'layout' => "{items}\n{summary}\n{pager}",
     'afterHeader' => [
         [
             'columns' => [
@@ -43,9 +92,6 @@ echo frontend\widgets\StatGridView::widget([
             'options' => ['class' => 'bg-success']
         ]
     ],
-    'emptyText' => $searchModel->client_id
-        ? Yii::t('app', 'Маълумот топилмади')
-        : Yii::t('app', 'Мижозни танланг'),
     'columns' => [
         [
             'class' => 'kartik\grid\DataColumn',
@@ -153,4 +199,8 @@ echo frontend\widgets\StatGridView::widget([
             'pageSummaryOptions' => ['class' => 'text-bold text-right']
         ],
     ],
+    'emptyText' => $searchModel->client_id
+        ? Yii::t('app', 'Маълумот топилмади')
+        : Yii::t('app', 'Мижозни танланг'),
+    'emptyTextOptions' => ['class' => 'alert alert-success']
 ]);

@@ -9,7 +9,7 @@ use kartik\grid\GridView as KartikGridView;
 /**
  * Class StatGridView
  * @package frontend\widgets
- * @property DataColumn $columns
+ * @property DataColumn[] $columns
  * @property string $panelHeading
  */
 class StatGridView extends KartikGridView
@@ -60,8 +60,6 @@ class StatGridView extends KartikGridView
         'xls' => true,
         'pdf' => true
     ];
-
-    public $options = ['class' => 'table-responsive'];
 
     public $layout = "{items}\n{summary}\n{pager}";
 

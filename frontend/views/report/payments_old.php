@@ -20,9 +20,52 @@ echo frontend\widgets\Collapse::widget([
 
 echo Html::beginTag('div', ['class' => 'card-body table-responsive no-padding']);
 
-echo frontend\widgets\StatGridView::widget([
-    'panelHeading' => ($dataProvider->totalCount > 0) ? Yii::t('app', 'Сўнгги тўлов қилинган вақт: ') . $dataProvider->models[0]->date_time : '',
+echo GridView::widget([
+    'summary' => Yii::t('app', 'Намойиш этилмоқда <b>{begin, number}-{end, number}</b> та ёзув <b>{totalCount, number}</b> тадан.'),
+    'panel' => [
+        'type' => GridView::TYPE_PRIMARY,
+        'heading' => ($dataProvider->totalCount > 0) ? Yii::t('app', 'Сўнгги тўлов қилинган вақт: ') . $dataProvider->models[0]->date_time : ''
+    ],
+    'striped' => false,
+    'hover' => true,
+    'filterRowOptions' => ['class' => 'hidden'],
+    'resizableColumns' => true,
+    'showPageSummary' => true,
+    'pageSummaryRowOptions' => ['class' => 'kv-page-summary warning'],
+    'toolbar' => ['{export}'],
+    'toggleDataOptions' => [
+        'maxCount' => 10000,
+        'minCount' => 1000,
+        'confirmMsg' => Yii::t('app', 'Ҳаммасини кўришни хохлайсизми?'),
+        'all' => [
+            'icon' => 'resize-full',
+            'label' => Yii::t('app', 'Барчаси'),
+            'class' => 'btn btn-default',
+            'title' => Yii::t('app', 'Барчасини кўрсатиш')
+        ],
+        'page' => [
+            'icon' => 'resize-small',
+            'label' => Yii::t('app', 'Саҳифа'),
+            'class' => 'btn btn-default',
+            'title' => Yii::t('app', 'Биринчи саҳифани кўрсатиш')
+        ],
+    ],
+    'export' => [
+        'label' => Yii::t('app', 'Юклаб олиш'),
+        'header' => false,
+        'fontAwesome' => true,
+        'target' => kartik\export\ExportMenu::TARGET_BLANK,
+        'format' => 'raw',
+        'showConfirmAlert' => false,
+    ],
+    'exportConfig' => [
+        'xls' => true
+    ],
+    'tableOptions' => ['class' => 'table table-bordered'],
     'dataProvider' => $dataProvider,
+    'options' => ['class' => 'table-responsive'],
+    'filterModel' => false,
+    'layout' => "{items}\n{summary}\n{pager}",
     'columns' => [
         [
             'class' => 'kartik\grid\DataColumn',
