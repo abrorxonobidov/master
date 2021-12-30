@@ -16,16 +16,55 @@ echo frontend\widgets\Collapse::widget([
     'content' => $this->render('_product_search', ['model' => $searchModel])
 ]);
 
-echo frontend\widgets\StatGridView::widget([
-    'panelHeading'  => $this->title,
+echo kartik\grid\GridView::widget([
+    'summary' => '{begin}-{end} / {totalCount}',
+    'panel' => [
+        'type' => 'primary',
+        'heading' => $this->title
+    ],
+    'resizableColumns' => true,
+    'striped' => false,
+    'hover' => true,
+    'showPageSummary' => true,
+    'pageSummaryRowOptions' => ['class' => 'kv-page-summary warning text-bold'],
+    'toolbar' => ['{export}'],
+    'panelTemplate' => "{panelHeading} {panelBefore} {items}",
+    'filterRowOptions' => ['class' => 'hidden'],
+    'toggleDataOptions' => [
+        'maxCount' => 10000,
+        'minCount' => 1000,
+        'confirmMsg' => Yii::t('app', 'Ҳаммасини кўришни хохлайсизми?'),
+        'all' => [
+            'icon' => 'resize-full',
+            'label' => Yii::t('app', 'Барчаси'),
+            'class' => 'btn btn-default',
+            'title' => Yii::t('app', 'Барчасини кўрсатиш')
+        ],
+        'page' => [
+            'icon' => 'resize-small',
+            'label' => Yii::t('app', 'Саҳифа'),
+            'class' => 'btn btn-default',
+            'title' => Yii::t('app', 'Биринчи саҳифани кўрсатиш')
+        ],
+    ],
+    'export' => [
+        'label' => Yii::t('app', 'Юклаб олиш'),
+        'header' => false,
+        'fontAwesome' => true,
+        'target' => kartik\export\ExportMenu::TARGET_BLANK,
+        'format' => 'raw',
+        'showConfirmAlert' => false,
+    ],
+    'exportConfig' => [
+        'xls' => true,
+    ],
     'dataProvider' => $dataProvider,
+    'options' => ['class' => 'table-responsive'],
     'filterModel' => $searchModel,
+    'layout' => "{items}\n{summary}\n{pager}",
     'rowOptions' => function ($model) {
         return ['class' => $model['income_amount'] ? 'bg-success' : 'bg-info'];
     },
-    'emptyText' => $searchModel->product_id
-        ? Yii::t('app', 'Маълумот топилмади')
-        : Yii::t('app', 'Маҳсулот танланг'),
     'columns' => [
         [
             'class' => 'kartik\grid\DataColumn',
@@ -178,4 +217,8 @@ echo frontend\widgets\StatGridView::widget([
             },
         ]
     ],
+    'emptyText' => $searchModel->product_id
+        ? Yii::t('app', 'Маълумот топилмади')
+        : Yii::t('app', 'Маҳсулот танланг'),
+    'emptyTextOptions' => ['class' => 'alert alert-success']
 ]);
