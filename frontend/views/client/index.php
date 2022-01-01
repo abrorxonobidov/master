@@ -21,6 +21,22 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'columns' => [
                 [
+                    'attribute' => 'name',
+                    'format' => 'raw',
+                    'contentOptions' => ['class' => 'text-bold']
+                ],
+                'phone',
+                'address',
+                [
+                    'attribute' => 'car_number',
+                    'format' => 'raw',
+                    'value' => 'carInfo',
+                    'headerOptions' => [
+                        'class' => 'col-md-3'
+                    ]
+                ],
+                'comment',
+                [
                     'attribute' => 'image',
                     'value' => function (common\models\Client $model) {
                         return $model->image ?
@@ -31,21 +47,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => 'raw',
                     'headerOptions' => ['class' => 'col-md-1']
                 ],
-                [
-                    'header' => Yii::t('app', 'Мижоз'),
-                    'attribute' => 'name',
-                    'format' => 'raw',
-                    'value' => 'personInfo',
-                    'contentOptions' => [
-                        'class' => 'text-center'
-                    ]
-                ],
-                [
-                    'attribute' => 'car_number',
-                    'format' => 'raw',
-                    'value' => 'carInfo'
-                ],
-                'comment',
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'headerOptions' => ['class' => 'col-sm-1'],

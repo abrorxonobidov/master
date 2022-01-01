@@ -43,7 +43,16 @@ class ClientSearch extends Client
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ['defaultOrder' => ['name' => SORT_ASC, 'id' => SORT_DESC]]
+            'sort' => [
+                'defaultOrder' => [
+                    'order' => SORT_ASC,
+                    'name' => SORT_ASC,
+                    'id' => SORT_DESC
+                ]
+            ],
+            'pagination' => [
+                'pageSize' => 200
+            ]
         ]);
 
         $this->load($params);
